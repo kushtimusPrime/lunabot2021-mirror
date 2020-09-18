@@ -1,0 +1,12 @@
+<launch>
+    <!-- <arg name="map_file" default="$(find move_base_static_sim)/clean_maps/porto_track.yaml"/> -->
+
+    <include file="$(find move_base_static_sim)/launch/move_base.launch"/>
+    <node pkg="tf" type="static_transform_publisher" name="map_to_odom_tf_pub"
+          args="0 0 0 0 0 0 1 map odom 50"/>
+
+
+    <node pkg="map_server" type="map_server" name="map_server" args="$(find move_base_static_sim)/clean_maps/porto_track.yaml"/>
+    <node pkg="move_base_static_sim" name="simulator" type="simulator.py"/>
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find move_base_static_sim)/config/sim.rviz"/>    
+</launch>

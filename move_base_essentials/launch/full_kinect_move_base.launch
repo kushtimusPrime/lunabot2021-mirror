@@ -1,0 +1,9 @@
+<launch>
+    <include file="$(find move_base_essentials)/launch/move_base.launch"/>
+    <include file="$(find mapping)/launch/freenect_kinect.launch"/>
+<!-- Tf publisher to account for the way the kinect is mount vertically on the robot-->
+    <node pkg="tf" type="static_transform_publisher" name="camera_base_link_rotation"
+        args="0 0 0 0 0 0 base_link camera_link 100" />
+    <node pkg="tf" type="static_transform_publisher" name="map_to_odom_tf_pub"
+          args="0 0 0 0 0 0 1 map odom 50"/>
+</launch>

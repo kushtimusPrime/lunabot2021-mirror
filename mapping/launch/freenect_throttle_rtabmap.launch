@@ -1,0 +1,9 @@
+<launch>
+    <include file="$(find rtabmap_ros)/launch/rtabmap.launch">
+        <arg name="subscribe_rgbd" value="true" />
+        <arg name="rgbd_topic" value="/camera/rgbd_image" />
+        <arg name="compressed" value="true" />
+        <arg name="rtabmap_args" value="--delete_db_on_start" />
+    </include>
+</launch>
+

@@ -1,0 +1,40 @@
+<launch>
+  <arg name="model" default="$(find teleop)/config/swapbot.urdf.xacro"/>
+  <arg name="rvizconfig" default="$(find urdf_tutorial)/rviz/urdf.rviz" />
+  <param name="use_gui" value="true"/>
+
+
+  <include file="$(find urdf_sim_tutorial)/launch/gazebo.launch">
+    <arg name="model" value="$(arg model)" />
+  </include>
+  
+  <!-- Needs to be uncommented if joint contoller is not implemented yet... 
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  --> 
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" />
+  
+  <!-- The following should be replaced by whatever the motor control team comes up with -->
+   <remap from="drive_cmd" to="gazebo_sample_drive_controller/cmd_vel"/>
+  <!-- joy node -->
+   <node respawn="true" pkg="joy"
+        type="joy_node" name="turtle_joy" >
+    <param name="dev" type="string" value="/dev/input/js0" />
+    <param name="deadzone" value="0.12" />
+   </node>
+   <node pkg="teleop" type="teleop_control.py" name="teleop_control"/>
+
+
+  <rosparam command="load"
+            file="$(find teleop)/config/joints.yaml"
+            ns="gazebo_joint_state_controller" />
+  <rosparam command="load"
+            file="$(find teleop)/config/sampledrive.yaml"
+            ns="gazebo_sample_drive_controller" />	
+
+  <node name="gazebo_controller_spawner" pkg="controller_manager" type="spawner"
+    args="gazebo_joint_state_controller gazebo_sample_drive_controller"/>
+
+
+</launch>
+

@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<robot name="swap_bot" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:property name="bwidth" value="0.35" />
+  <xacro:property name="blength" value="0.9" />
+  <xacro:property name="bheight" value=".05" />
+  <xacro:property name="clearance" value="0.10" />
+  <xacro:property name="wheelthick" value=".05" />
+  <xacro:property name="wheeldiam" value=".2" />
+
+   <xacro:macro name="default_inertial" params="mass">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
+    </inertial>
+  </xacro:macro> 
+
+  <link name="base_link">
+    <visual>
+      <geometry>
+	<mesh filename= "package://teleop/config/betterbase.stl" scale="0.0254 0.0254 0.0254"/>
+        <!--<box size="${blength} ${bwidth} ${bheight}"/>-->
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 ${clearance}"/>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+	<mesh filename= "package://teleop/config/betterbase.stl" scale="0.0254 0.0254 0.0254"/>
+        <!--<box size="${blength} ${bwidth} ${bheight}"/>-->
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 ${clearance}"/>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </collision>
+    <xacro:default_inertial mass="50"/> 
+  </link>
+
+  <xacro:macro name="wheel" params="prefix suffix ref ref2">
+    <link name="${prefix}_${suffix}_wheel">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <cylinder length="${wheelthick}" radius="${wheeldiam/2}"/>
+        </geometry>
+        <material name="black">
+          <color rgba="0 0 0 1"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <cylinder length="${wheelthick}" radius="${wheeldiam/2}"/>
+        </geometry>
+        <material name="black">
+          <color rgba="0 0 0 1"/>
+        </material>
+      </collision>
+      <xacro:default_inertial mass="1"/>
+    </link>
+    <joint name="${prefix}_${suffix}_wheel_joint" type="continuous">
+      <axis xyz="0 0 ${ref}"/>
+      <parent link="base_link"/>
+      <child link="${prefix}_${suffix}_wheel"/>
+      <origin xyz="${0.25*ref2} ${ref*(wheelthick/2+bwidth/2+0.01)} ${wheeldiam/2}"  rpy="${ref*pi/-2} 0 0" />
+    </joint>
+
+    <!-- This block provides the simulator (Gazebo) with information on a few additional
+    physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more-->
+    <gazebo reference="${prefix}_${suffix}_wheel">
+      <fdir1 value="0 0 1"/>
+      <mu1 value="0.1"/>
+      <mu2 value="100"/>
+      <kp value="10000000.0" />
+      <kd value="1.0" />
+
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <!-- This block connects the wheel joint to an actuator (motor), which informs both
+    simulation and visualization of the robot -->
+    <transmission name="${prefix}_${suffix}_wheel_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <actuator name="${prefix}_${suffix}_wheel_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+      <joint name="${prefix}_${suffix}_wheel_joint">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      </joint>
+    </transmission>
+  </xacro:macro>
+  
+
+  
+  <xacro:wheel prefix="left" suffix="front" ref="-1" ref2="1"/>
+  <xacro:wheel prefix="left" suffix="back" ref="-1" ref2="-1"/>
+  <xacro:wheel prefix="right" suffix="front" ref="1" ref2="1"/>
+  <xacro:wheel prefix="right" suffix="back" ref="1" ref2="-1"/>
+  
+  
+    <!-- Gazebo plugin for ROS Control -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>
+    </plugin>
+  </gazebo>
+  
+
+</robot>
+
