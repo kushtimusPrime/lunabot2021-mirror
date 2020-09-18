@@ -1,0 +1,6 @@
+<launch>
+
+    <include file="freenect_throttle_rtabmap.launch" />
+    <include file="freenect_throttle.launch" />
+
+</launch>
