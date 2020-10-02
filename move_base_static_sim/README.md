@@ -4,3 +4,10 @@ This package will use launch ROS mapserver, which will take still images and cre
 roslaunch move_base_static_sim sim.launch
 ```
 The sim.launch file launches all of the necessary nodes to accomplish the above goal.
+
+You will need the move_base and map_server packages. You can get these with:
+
+```
+sudo apt install ros-melodic-move-base
+sudo apt install ros-melodic-map-server
+```
