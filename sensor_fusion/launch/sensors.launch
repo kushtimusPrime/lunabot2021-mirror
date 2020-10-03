@@ -1,0 +1,23 @@
+<launch>
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+        <!-- For IMU Info -->
+        <arg name="enable_gyro" value="true" />
+        <arg name="enable_accel" value="true" />
+
+        <!-- For RTBAB-Map -->
+        <!--<arg name="align_depth" value="true" />
+        <arg name="unite_imu_method" value="linear_interpolation" />
+        <arg name="enable_color" value="true" />
+        <arg name="enable_depth" value="true" />-->
+
+        <arg name="enable_infra1" value="false" />
+        <arg name="enable_infra2" value="false" />
+        <arg name="enable_fisheye" value="false" />
+
+        <arg name="publish_tf" value="true" />
+        <arg name="publish_odom_tf" value="true" />
+    </include>
+
+    <!--- <include file="$(find mapping)/launch/rtabmap.launch" /> -->
+
+</launch>
