@@ -31,9 +31,13 @@ def throttle_angle_to_thrust(linear_v, angular_v):
 
 def start():
 	
-	##Initalize tank_speed_control Node
-	rospy.init_node('tank_speed_control')
+	pub = rospy.Publisher("joystick_reader", String ,queue_size=10)
 
+	#subscribed to joystick input on topic Joy
+	rospy.Subscriber('/joy', Joy, callback)
+
+	##Initalize tank_speed_control Node
+	rospy.init_node('tank_speed_control_c')
 
 
 if __name__ == '__main__':
