@@ -7,6 +7,5 @@
    </node>
 
    <node pkg="teleop_a" type="tank_speeds.py" name="tank_speeds"/>
-   <node pkg="teleop_a" type="duty_cycle.py"  name="duty_cycle"/>
    <node pkg="teleop_a" type="motor_control_c.py" name="motor_control_c"/>
 </launch>
