@@ -3,8 +3,8 @@
 #include <geometry_msg/Twist.h>
 
 
-int x_linear = 0; ##fake forward and backward velocity MAX 0.34
-int z_angular = 0; ##fake angular veloctiy about z axis MAX 0.72
+x_linear = 0; ##fake forward and backward velocity MAX 0.34
+z_angular = 0; ##fake angular veloctiy about z axis MAX 0.72
 
 class Velocity: 
 
