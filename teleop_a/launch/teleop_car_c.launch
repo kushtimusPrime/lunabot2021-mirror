@@ -1,11 +1,4 @@
 <launch>
-   <!-- joy node -->
-   <node respawn="true" pkg="joy"
-        type="joy_node" name="turtle_joy" >
-    <param name="dev" type="string" value="/dev/input/js0" />
-    <param name="deadzone" value="0.12" />
-   </node>
-
-   <node pkg="teleop_a" type="tank_speeds.py" name="tank_speeds"/>
-   <node pkg="teleop_a" type="motor_control_c.py" name="motor_control_c"/>
+   <node pkg="teleop_a" type="velocity_control.py" name="velocity_control"/>
+   <node pkg="teleop_a" type="motor_control_b.py" name="motor_control_b"/>
 </launch>
