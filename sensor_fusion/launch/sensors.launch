@@ -1,0 +1,26 @@
+<launch>
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+        <!-- For RealSense IMU Info -->
+        <arg name="enable_gyro" value="true" />
+        <arg name="enable_accel" value="true" />
+
+        <!-- For RTAB-Map -->
+        <arg name="align_depth" value="true" />
+        <arg name="enable_color" value="true" />
+        <arg name="enable_depth" value="true" />
+
+        <!-- Disable everything that is unused to avoid Hardware Overflow -->
+        <arg name="enable_infra1" value="false" />
+        <arg name="enable_infra2" value="false" />
+        <arg name="enable_fisheye" value="false" />
+
+        <!-- Transform trees are needed for the ekf_localization_node -->
+        <arg name="publish_tf" value="true" />
+        <arg name="publish_odom_tf" value="true" />
+    </include>
+
+    <node pkg="tf" type="static_transform_publisher" name="camera_link_transform"
+        args="0 0 0 0.5 -0.5 0.5 -0.5 base_link camera_link 1000" />
+
+    <include file="$(find mapping)/launch/rtabmap.launch" />
+</launch>
