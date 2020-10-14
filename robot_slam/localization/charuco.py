@@ -5,12 +5,17 @@ import cv2
 import numpy as np
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Pose, PoseStamped
-from std_msgs.msg import Bool, Float64
+from std_msgs.msg import Bool, Float64, Image
 from cv_bridge import CvBridge
 import tf2_ros
 import tf
 import yaml
+from cv_bridge import CvBridge
+bridge = CvBridge()
+
 print((cv2.__version__))
+
+IMAGE_TOPIC="AKASH FIGURE IT OUT YOU NERD"
 
 rospy.init_node('aruco_localization')
 BOARD_FILE = rospkg.RosPack().get_path('robot_slam') + '/board.yaml'
@@ -39,7 +44,7 @@ dist = np.asarray(cal_data['dist_coefficients'])
 p_rvec = None
 p_tvec = None
 
-cap = cv2.VideoCapture("/home/nisala/firsttest/catkin-ws/src/c1ft.MOV")
+cap = cv2.VideoCapture("/home/nisala/catkin_ws/src/robot_slam/realsense.mkv")
 decimator = 0
 
 bridge = CvBridge()
@@ -52,9 +57,11 @@ robot_pose_publisher = rospy.Publisher('charuco/rover_pose', Pose, queue_size=0)
 marker_detected_publisher = rospy.Publisher('charuco/marker_detected', Bool, queue_size=0)
 raw_distance_publisher = rospy.Publisher('charuco/raw_distance', Float64, queue_size=0)
 counter = 0
-while cap.isOpened():
-    ret, frame = cap.read()
-    if ret:
+
+
+def callback(data):
+    image = bridge.imgmsg_to_cv2(data, desired_encoding='passthrough')
+    if image:
         print("frame")
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         gray2 = gray
@@ -129,6 +136,9 @@ while cap.isOpened():
         print("out")
         break
 
-print("broke")
-cap.release()
-cv2.destroyAllWindows()
+def main():
+    rospy.Subscriber(IMAGE_TOPIC, Image, callback)
+    rospy.spin()
+
+if __name__ == '__main__':
+    main()
