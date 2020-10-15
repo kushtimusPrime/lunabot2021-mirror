@@ -13,14 +13,14 @@ import yaml
 bridge = CvBridge()
 
 
-IMAGE_TOPIC="/camera/color/image_raw"
+IMAGE_TOPIC = "/camera/color/image_raw"
 
 rospy.init_node('aruco_localization')
 BOARD_FILE = rospkg.RosPack().get_path('robot_slam') + '/board.yaml'
 CALIBRATION_DATA_FILE = rospkg.RosPack().get_path('robot_slam') + '/localization/calibration/camera_b.yaml'
 
 cal_data = yaml.load(open(BOARD_FILE, 'r'), Loader=yaml.Loader)
-#board = cal_data['board']
+# board = cal_data['board']
 dictionary = cv2.aruco.Dictionary_get(cv2.aruco.DICT_6X6_250)
 board = cv2.aruco.CharucoBoard_create(
     cal_data['num_cols'],
@@ -29,7 +29,7 @@ board = cv2.aruco.CharucoBoard_create(
     cal_data['marker_size'],
     dictionary
 )
-parameters =  cv2.aruco.DetectorParameters_create()
+parameters = cv2.aruco.DetectorParameters_create()
 
 
 imboard = board.draw((1000, 1400))
@@ -72,19 +72,19 @@ def callback(data):
     res = cv2.aruco.detectMarkers(gray, board.dictionary, parameters=parameters)
     cv2.aruco.refineDetectedMarkers(gray, board, res[0], res[1], res[2])
 
-    if len(res[0])>0:
+    if len(res[0]) > 0:
         for r in res[0]:
             cv2.cornerSubPix(
-                gray, 
+                gray,
                 r,
-                winSize = (3,3),
-                zeroZone = (-1,-1),
-                criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.00001)
+                winSize=(3, 3),
+                zeroZone=(-1, -1),
+                criteria=(cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.00001)
             )
-        res2 = cv2.aruco.interpolateCornersCharuco(res[0],res[1],gray,board)
+        res2 = cv2.aruco.interpolateCornersCharuco(res[0], res[1], gray, board)
 
-        if res2[1] is not None and res2[2] is not None and len(res2[1])>3 and decimator%3==0:
-            cv2.aruco.drawDetectedCornersCharuco(gray,res2[1],res2[2])
+        if res2[1] is not None and res2[2] is not None and len(res2[1]) > 3 and decimator % 3 == 0:
+            cv2.aruco.drawDetectedCornersCharuco(gray, res2[1], res2[2])
             retval, rvec, tvec = cv2.aruco.estimatePoseCharucoBoard(res2[1], res2[2], board, mtx, dist, rvec=p_rvec, tvec=p_tvec)
             if retval:
                 print('rvec:', rvec)
@@ -93,10 +93,10 @@ def callback(data):
                 p_tvec = tvec
 
                 # Compute pose of Camera relative to world
-                #dst, _ = cv2.Rodrigues(rvec)
-                #R = dst.T
-                #tvec = np.dot(-R, tvec)
-                #rvec, _ = cv2.Rodrigues(R)
+                # dst, _ = cv2.Rodrigues(rvec)
+                # R = dst.T
+                # tvec = np.dot(-R, tvec)
+                # rvec, _ = cv2.Rodrigues(R)
 
                 marker_detected.data = True
                 marker_pose = PoseStamped()
@@ -113,28 +113,30 @@ def callback(data):
                 marker_pose.pose.orientation.z = quat[2]
                 marker_pose.pose.orientation.w = quat[3]
                 marker_pose_publisher.publish(marker_pose)
-                raw_distance_publisher.publish(((tvec[2,0] ** 2) + (tvec[0,0] ** 2) + (tvec[1,0] ** 2)) ** 0.5)
-                #robot_pose = Pose()
-                #trans = tfBuffer.lookup_transform(robot_frame, world_frame, rospy.Time(0))
-                #robot_pose.position.x = trans.translation.x
-                #robot_pose.position.y = trans.translation.y
-                #robot_pose.position.z = trans.translation.z
-                #robot_pose.orientation.x = trans.rotation.x
-                #robot_pose.orientation.y = trans.rotation.y
-                #robot_pose.orientation.z = trans.rotation.z
-                #robot_pose.orientation.w = trans.rotation.w
-                #robot_pose_publisher.publish(robot_pose)
+                raw_distance_publisher.publish(((tvec[2, 0] ** 2) + (tvec[0, 0] ** 2) + (tvec[1, 0] ** 2)) ** 0.5)
+                # robot_pose = Pose()
+                # trans = tfBuffer.lookup_transform(robot_frame, world_frame, rospy.Time(0))
+                # robot_pose.position.x = trans.translation.x
+                # robot_pose.position.y = trans.translation.y
+                # robot_pose.position.z = trans.translation.z
+                # robot_pose.orientation.x = trans.rotation.x
+                # robot_pose.orientation.y = trans.rotation.y
+                # robot_pose.orientation.z = trans.rotation.z
+                # robot_pose.orientation.w = trans.rotation.w
+                # robot_pose_publisher.publish(robot_pose)
                 detected_marker_image_publisher.publish(bridge.cv2_to_imgmsg(gray2, '8UC1'))
 
-    #cv2.imshow('frame', gray2)
-    decimator+=1
+    # cv2.imshow('frame', gray2)
+    decimator += 1
 
     marker_detected_publisher.publish(marker_detected)
     raw_image_publisher.publish(bridge.cv2_to_imgmsg(gray2, '8UC1'))
 
+
 def main():
     rospy.Subscriber(IMAGE_TOPIC, Image, callback)
     rospy.spin()
+
 
 if __name__ == '__main__':
     main()
