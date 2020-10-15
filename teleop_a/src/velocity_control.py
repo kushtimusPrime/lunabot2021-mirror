@@ -38,27 +38,7 @@ class Velocity:
         if theta<-90: return -v_b,-v_a
         if theta<0: return -v_a,v_b
         if theta<90: return v_b,v_a
-
-		# normalize angular speed value to [-180, 180)
-    	# normalize linear speed value to [0, 100]
-        #theta = angular*250       		
-    	#r = linear*(100/0.340)        				 
-
-    	# falloff of main motor
-    	#v_a = r * (45 - theta % 90) / 45
-    	# compensation of other motor
-    	#v_b = min(100,abs( 2 * r + v_a), abs(2 * r - v_a)) 
-
-
-   		 #direction cases
-    	#if theta < -90: return -v_b, -v_a
-    	#if theta < 0:   return -v_a, v_b
-    	#if theta < 90:  return v_b, v_a
-    		
-		#self.publishers["pub_left_control"].publish(v_a)
-        #self.publishers["pub_right_control"].publish(v_b)
     
-
    		
 if __name__ == '__main__':
     # Initialize as ROS node
