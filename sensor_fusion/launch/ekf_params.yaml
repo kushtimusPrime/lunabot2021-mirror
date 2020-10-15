@@ -75,7 +75,7 @@ world_frame: odom             # Defaults to the value of odom_frame if unspecifi
 
 # RealSense Gyroscope
 imu0: /camera/gyro/sample
-# Only angular acceleration is sent
+# Only angular velocity is sent
 imu0_config: [
   false, false, false,
   false, false, false,
@@ -86,7 +86,7 @@ imu0_config: [
 
 # RealSense Acclerometer
 imu1: /camera/accel/sample
-# Only linear velocity is sent
+# Only linear acceleration is sent
 imu1_config: [
   false, false, false,
   false, false, false,
@@ -95,7 +95,7 @@ imu1_config: [
   true, true, true,
 ]
 
-# RTBA-Map Odom
+# RTAB-Map Odom
 odom0: /rtabmap/odom
 odom0_config: [
   true, true, true,
