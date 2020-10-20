@@ -50,7 +50,7 @@ tfListener = tf2_ros.TransformListener(tfBuffer)
 raw_image_publisher = rospy.Publisher('camera/raw_image', Image, queue_size=0)
 detected_marker_image_publisher = rospy.Publisher('camera/detected_image', Image, queue_size=0)
 marker_pose_publisher = rospy.Publisher('charuco/marker_pose', PoseStamped, queue_size=0)
-robot_pose_publisher = rospy.Publisher('charuco/rover_pose', Pose, queue_size=0)
+robot_pose_publisher = rospy.Publisher('charuco/rover_pose', PoseStamped, queue_size=0)
 marker_detected_publisher = rospy.Publisher('charuco/marker_detected', Bool, queue_size=0)
 raw_distance_publisher = rospy.Publisher('charuco/raw_distance', Float64, queue_size=0)
 counter = 0
@@ -104,7 +104,6 @@ def callback(data):
                 marker_pose.header.frame_id = "camera_link"
                 marker_pose.header.stamp = rospy.Time.now()
                 marker_pose.header.seq = counter
-                counter = counter + 1
                 marker_pose.pose.position.x = tvec[2, 0]
                 marker_pose.pose.position.y = tvec[0, 0]
                 marker_pose.pose.position.z = tvec[1, 0]
@@ -114,17 +113,23 @@ def callback(data):
                 marker_pose.pose.orientation.w = quat[3]
                 marker_pose_publisher.publish(marker_pose)
                 raw_distance_publisher.publish(((tvec[2, 0] ** 2) + (tvec[0, 0] ** 2) + (tvec[1, 0] ** 2)) ** 0.5)
-                # robot_pose = Pose()
-                # trans = tfBuffer.lookup_transform(robot_frame, world_frame, rospy.Time(0))
-                # robot_pose.position.x = trans.translation.x
-                # robot_pose.position.y = trans.translation.y
-                # robot_pose.position.z = trans.translation.z
-                # robot_pose.orientation.x = trans.rotation.x
-                # robot_pose.orientation.y = trans.rotation.y
-                # robot_pose.orientation.z = trans.rotation.z
-                # robot_pose.orientation.w = trans.rotation.w
-                # robot_pose_publisher.publish(robot_pose)
+
+                robot_pose = PoseStamped()
+                trans = tfBuffer.lookup_transform('base_link', 'map', rospy.Time(0))
+                robot_pose.header.frame_id = "base_link"
+                robot_pose.header.stamp = rospy.Time.now()
+                robot_pose.header.seq = counter
+                robot_pose.pose.position.x = trans.transform.translation.x
+                robot_pose.pose.position.y = trans.transform.translation.y
+                robot_pose.pose.position.z = trans.transform.translation.z
+                robot_pose.pose.orientation.x = trans.transform.rotation.x
+                robot_pose.pose.orientation.y = trans.transform.rotation.y
+                robot_pose.pose.orientation.z = trans.transform.rotation.z
+                robot_pose.pose.orientation.w = trans.transform.rotation.w
+                robot_pose_publisher.publish(robot_pose)
                 detected_marker_image_publisher.publish(bridge.cv2_to_imgmsg(gray2, '8UC1'))
+
+                counter = counter + 1
 
     # cv2.imshow('frame', gray2)
     decimator += 1
