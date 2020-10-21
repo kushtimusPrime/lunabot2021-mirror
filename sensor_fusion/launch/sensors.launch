@@ -3,6 +3,8 @@
         <!-- For RealSense IMU Info -->
         <arg name="enable_gyro" value="true" />
         <arg name="enable_accel" value="true" />
+        <arg name="unite_imu_method" value="linear_interpolation" />
+        <arg name="enable_sync" value="true" />
 
         <!-- For RTAB-Map -->
         <arg name="align_depth" value="true" />
@@ -18,6 +20,14 @@
         <arg name="publish_tf" value="true" />
         <arg name="publish_odom_tf" value="true" />
     </include>
+
+    <node pkg="imu_filter_madgwick" type="imu_filter_node" name="madgiwck_filter">
+        <param name="use_mag" value="false" />
+        <param name="publish_tf" value="false" />
+        <param name="world_frame" value="enu" />
+        <remap from="/imu/data_raw" to="/camera/imu" />
+        <remap from="/imu/data" to="/rtabmap/imu" />
+    </node>
 
     <node pkg="tf" type="static_transform_publisher" name="camera_link_transform"
         args="0 0 0 0 0 0 base_link camera_link 1000" />
