@@ -45,6 +45,15 @@ class Velocity:
             a=a_Percentage*100
             b=b_Percentage*100
     
+        if(a>0):
+            a=0.55*a+45
+        else:
+            a=0.55*a-45
+        if(b>0):
+            b=0.55*b+45
+        else:
+            b=0.55*b-45
+
         self.publishers["pub_left_control"].publish(a)
         self.publishers["pub_right_control"].publish(b)
         return a, b
