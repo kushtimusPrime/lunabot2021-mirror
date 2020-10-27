@@ -66,7 +66,7 @@ publish_acceleration: true
 map_frame: map                # Defaults to "map" if unspecified
 odom_frame: odom              # Defaults to "odom" if unspecified
 # camera_link because RealSense base_frame_id is camera_link
-base_link_frame: base_link  # Defaults to "base_link" if unspecified
+base_link_frame: base_link    # Defaults to "base_link" if unspecified
 world_frame: odom             # Defaults to the value of odom_frame if unspecified
 
 
@@ -74,7 +74,7 @@ world_frame: odom             # Defaults to the value of odom_frame if unspecifi
 # Sensors
 
 # IMU Filter Madgwick
-imu0: /imu/data
+imu0: /rtabmap/imu
 # IMU Filter Madgwick fuses angular velocity and linear acceleration into orientation
 imu0_config: [
   false, false, false,

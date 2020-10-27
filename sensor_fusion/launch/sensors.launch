@@ -30,7 +30,7 @@
     </node>
 
     <node pkg="tf" type="static_transform_publisher" name="camera_link_transform"
-        args="0 0 0 0 0 0 base_link camera_link 1000" />
+        args="0 0 0 0 0 0 base_link camera_link 0.000001" />
 
     <include file="$(find mapping)/launch/rtabmap.launch" />
 </launch>
