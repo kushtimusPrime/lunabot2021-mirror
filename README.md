@@ -43,3 +43,43 @@ rqt_graph
 ## Notes on developing these packages
 
 If you are working on a new version of a particular package, do it on a separate branch! The master branch should always contain the latest *working version* of each package. Once your new version of a package is working and thoroughly tested, it can be merged into the master branch.
+
+##Notes on Decentralized ROS
+Throughout testing ROS code, it will become very important to test our code on actual machines. Below is an example where you have a catkin workspace on your computer (COMP1) and you have the same branch of the workspace on a Raspberry Pi attached to the machine (PI 1).
+
+Prerequisite: Same wifi connection/VPN connection
+The best way to verify that the connection is strong enough is by making a terminal chatroom between COMP1 and PI1 via netcat.
+
+COMP 1
+```
+netcat -l [Port Number (ex. 1234)]
+```
+
+PI 1
+```
+netcat [COMP1 IP Address] [Same Port Number (ex. 1234)]
+```
+
+You should be able to type a message on either the COMP1 terminal or the PI1 terminal, hit enter, and then see that message on the other terminal.
+
+Main Step: Setup ROS_MASTER_URI
+ROS_MASTER_URI is a ROS variable that tells all the ROS nodes where to look to find the master (roscore). By default, ROS_MASTER_URI is set to http://localhost:11311. However, in this particular scenario, the goal is to have a single roscore shared by two macines (COMP1 and PI1).
+ROS_IP is another ROS variable that specifies the IP address of the local machine to ROS nodes. While its usually okay to leave default, it can sometimes cause errors if not specified.
+
+COMP1
+```
+export ROS_MASTER_URI=http://[COMP1 IP Address]:11311/
+export ROS_IP=[COMP1 IP Address]
+roscore
+```
+
+PI1
+```
+export ROS_MASTER_URI=http://[COMP 1 IP Address]:11311/
+export ROS_IP]=[PI1 IP Address]
+roslaunch ...
+```
+
+The reason why this will be very helpful is that many ROS visualization tools (rviz, rtabmapviz) will lag on the pi, so being able to see those visualizations on a computer while running ROS code on a pi connected to the machine is the ticket.
+
+
