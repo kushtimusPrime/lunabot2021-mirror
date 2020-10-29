@@ -44,7 +44,7 @@ rqt_graph
 
 If you are working on a new version of a particular package, do it on a separate branch! The master branch should always contain the latest *working version* of each package. Once your new version of a package is working and thoroughly tested, it can be merged into the master branch.
 
-##Notes on Decentralized ROS
+## Notes on Decentralized ROS
 Throughout testing ROS code, it will become very important to test our code on actual machines. Below is an example where you have a catkin workspace on your computer (COMP1) and you have the same branch of the workspace on a Raspberry Pi attached to the machine (PI 1).
 
 Prerequisite: Same wifi connection/VPN connection
