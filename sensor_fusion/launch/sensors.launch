@@ -4,7 +4,7 @@
         <arg name="enable_gyro" value="true" />
         <arg name="enable_accel" value="true" />
         <arg name="unite_imu_method" value="linear_interpolation" />
-        <arg name="enable_sync" value="true" />
+        <arg name="enable_sync" value="false" />
 
         <!-- For RTAB-Map -->
         <arg name="align_depth" value="true" />
@@ -20,6 +20,7 @@
         <arg name="publish_tf" value="true" />
         <arg name="publish_odom_tf" value="true" />
     </include>
+    <rosparam> /camera/motion_module/global_time_enabled: false </rosparam>
 
     <node pkg="imu_filter_madgwick" type="imu_filter_node" name="madgiwck_filter">
         <param name="use_mag" value="false" />
@@ -30,7 +31,7 @@
     </node>
 
     <node pkg="tf" type="static_transform_publisher" name="camera_link_transform"
-        args="0 0 0 0 0 0 base_link camera_link 0.000001" />
+        args="0 0 0 0 0 0 base_link camera_link 100" />
 
     <include file="$(find mapping)/launch/rtabmap.launch" />
 </launch>
