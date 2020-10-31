@@ -8,3 +8,6 @@ Install the ROS RealSense package
 
 Install the ROS Robot Localization pacakge
 `sudo apt-get install ros-melodic-robot-localization`
+
+Install the ROS IMU Filter Madgwick
+`sudo apt-get install ros-melodic-imu-filter-madgwick`

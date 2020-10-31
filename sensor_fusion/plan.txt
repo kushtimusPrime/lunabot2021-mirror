@@ -1,0 +1,20 @@
+RealSense --> Generating PointCloud
+Charuco --> Pose Estimate
+IMU --> IMU Measurements
+
+RTABMAP - VISLAM
+    IMU
+    Use visual odometry for now, feed it EKF node once Wheel odom
+
+EKF Node - Map --> Odom
+    Charuco
+    RTABMAP
+
+EKF Node - Odom --> Base_Link
+    IMU
+    RTABMAP Odom
+    Wheel Odom - Once we get the robot
+
+For now
+Map --> Odom - Charuco - Will use RTABMAP, but we want charuco which is more accurate
+Odom --> Base_Link - RTABMAP
