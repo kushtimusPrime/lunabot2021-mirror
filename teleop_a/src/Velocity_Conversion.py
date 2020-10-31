@@ -10,13 +10,12 @@ class Velocity:
        		# Initialize drive speed publishers
         	self.publishers = {
             	"pub_left_control": rospy.Publisher('left_control', Float64, queue_size=0),
-           		"pub_right_control": rospy.Publisher('right_control', Float64, queue_size=0),
-        	}
+           	"pub_right_control": rospy.Publisher('right_control', Float64, queue_size=0),
+                }
 
         	self.left_speed = rospy.Subscriber("cmd_vel",Twist,self.method)
 
     def method(self,data):
-    
         # get data from twist
         linear = data.linear.x
         angular = data.angular.z
@@ -44,21 +43,20 @@ class Velocity:
         else:
             a=a_Percentage*100
             b=b_Percentage*100
-    
         threshhold = 0.20
 
         if(a>0):
-		a = 0.55*a+45
+	    a = 0.55*a+45
 	elif(a == 0):
-		a = 0
+	    a = 0
 	else:
-		a = 0.55*a-45
+	    a = 0.55*a-45
 	if(b>0):
-		b = 0.55*b+45
+	    b = 0.55*b+45
 	elif(b == 0):
-		b = 0
+	    b = 0
 	else:
-		b = 0.55*b-45
+	    b = 0.55*b-45
 
         self.publishers["pub_left_control"].publish(a)
         self.publishers["pub_right_control"].publish(b)
