@@ -13,5 +13,6 @@
         <arg name="approx_sync" value="false" />
 
         <arg name="frame_id" value="base_link" />
+        <arg name="publish_tf_odom" value="true" />
     </include>
 </launch>
