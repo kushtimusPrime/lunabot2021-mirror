@@ -49,13 +49,13 @@ class Velocity:
 
         if(a>0):
 		a = 0.55*a+45
-	else if(a == 0):
+	elif(a == 0):
 		a = 0
 	else:
 		a = 0.55*a-45
 	if(b>0):
 		b = 0.55*b+45
-	else if(b == 0):
+	elif(b == 0):
 		b = 0
 	else:
 		b = 0.55*b-45
