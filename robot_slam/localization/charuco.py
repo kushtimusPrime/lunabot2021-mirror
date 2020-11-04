@@ -9,6 +9,7 @@ from std_msgs.msg import Bool, Float64
 from cv_bridge import CvBridge
 import tf2_ros
 import tf
+import tf_conversions
 import yaml
 bridge = CvBridge()
 
@@ -46,6 +47,8 @@ decimator = 0
 
 bridge = CvBridge()
 tfBuffer = tf2_ros.Buffer()
+tf1Broadcaster = tf.TransformBroadcaster()
+tf1Listener = tf.TransformListener()
 tfListener = tf2_ros.TransformListener(tfBuffer)
 raw_image_publisher = rospy.Publisher('camera/raw_image', Image, queue_size=0)
 detected_marker_image_publisher = rospy.Publisher('camera/detected_image', Image, queue_size=0)
@@ -104,9 +107,9 @@ def callback(data):
                 marker_pose.header.frame_id = "camera_link"
                 marker_pose.header.stamp = rospy.Time.now()
                 marker_pose.header.seq = counter
-                marker_pose.pose.position.x = tvec[0, 0]
-                marker_pose.pose.position.y = tvec[2, 0]
-                marker_pose.pose.position.z = tvec[1, 0]
+                marker_pose.pose.position.x = tvec[0, 0] / 100
+                marker_pose.pose.position.y = tvec[2, 0] / 100
+                marker_pose.pose.position.z = tvec[1, 0] / 100
                 marker_pose.pose.orientation.x = quat[0]
                 marker_pose.pose.orientation.y = quat[1]
                 marker_pose.pose.orientation.z = quat[2]
@@ -114,20 +117,50 @@ def callback(data):
                 marker_pose_publisher.publish(marker_pose)
                 raw_distance_publisher.publish(((tvec[2, 0] ** 2) + (tvec[0, 0] ** 2) + (tvec[1, 0] ** 2)) ** 0.5)
 
-                robot_pose = PoseStamped()
-                trans = tfBuffer.lookup_transform('base_link', 'map', rospy.Time(0))
-                robot_pose.header.frame_id = "base_link"
-                robot_pose.header.stamp = rospy.Time.now()
-                robot_pose.header.seq = counter
-                robot_pose.pose.position.x = trans.transform.translation.x
-                robot_pose.pose.position.y = trans.transform.translation.y
-                robot_pose.pose.position.z = trans.transform.translation.z
-                robot_pose.pose.orientation.x = trans.transform.rotation.x
-                robot_pose.pose.orientation.y = trans.transform.rotation.y
-                robot_pose.pose.orientation.z = trans.transform.rotation.z
-                robot_pose.pose.orientation.w = trans.transform.rotation.w
-                robot_pose_publisher.publish(robot_pose)
-                detected_marker_image_publisher.publish(bridge.cv2_to_imgmsg(gray2, '8UC1'))
+                try:
+                    # First we need to get the estimate of the robot pose from the odometry data
+                    (trans_base_odom, rot_base_odom) = tf1Listener.lookupTransform('odom', 'base_link', rospy.Time(0))
+
+                    # Extract rotation from quaternion
+                    (roll_base_odom, pitch_base_odom, yaw_base_odom) = tf_conversions.transformations.euler_from_quaternion(rot_base_odom)
+
+                    pos = marker_pose.pose.position
+
+                    # theta_odom_map is the error between the particle filter estimated orientation vs the odometry estimated orientation
+                    # Once again assumes 2D robot - robot does not fly or roll
+                    theta_odom_map = pos.z - yaw_base_odom
+
+                    #Next, we find the difference in the position estimate between the particle filter and the odometry
+                    x_odom_map = pos.x - trans_base_odom[0]*np.cos(theta_odom_map) + trans_base_odom[1]*np.sin(theta_odom_map)
+                    y_odom_map = pos.y - trans_base_odom[1]*np.cos(theta_odom_map) - trans_base_odom[0]*np.sin(theta_odom_map)
+                    z_odom_map = 0 # Assuming the robot is not magically flying
+
+
+
+                    # Finally, we convert back to quaternion
+                    print(theta_odom_map)
+                    q = tf_conversions.transformations.quaternion_from_euler(0, 0, theta_odom_map)
+
+                    # Publish transform
+                    tf1Broadcaster.sendTransform((x_odom_map, y_odom_map, z_odom_map), q, rospy.Time.now(), "/odom", "/map")
+
+                except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                    rospy.logwarn("Unable to publish transformation from /map --> /odom because of an error with transform from /odom --> /base_link")
+
+                # robot_pose = PoseStamped()
+                # trans = tfBuffer.lookup_transform('base_link', 'map', rospy.Time(0))
+                # robot_pose.header.frame_id = "base_link"
+                # robot_pose.header.stamp = rospy.Time.now()
+                # robot_pose.header.seq = counter
+                # robot_pose.pose.position.x = trans.transform.translation.x
+                # robot_pose.pose.position.y = trans.transform.translation.y
+                # robot_pose.pose.position.z = trans.transform.translation.z
+                # robot_pose.pose.orientation.x = trans.transform.rotation.x
+                # robot_pose.pose.orientation.y = trans.transform.rotation.y
+                # robot_pose.pose.orientation.z = trans.transform.rotation.z
+                # robot_pose.pose.orientation.w = trans.transform.rotation.w
+                # robot_pose_publisher.publish(robot_pose)
+                # detected_marker_image_publisher.publish(bridge.cv2_to_imgmsg(gray2, '8UC1'))
 
                 counter = counter + 1
 
