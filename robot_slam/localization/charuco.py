@@ -104,8 +104,8 @@ def callback(data):
                 marker_pose.header.frame_id = "camera_link"
                 marker_pose.header.stamp = rospy.Time.now()
                 marker_pose.header.seq = counter
-                marker_pose.pose.position.x = tvec[2, 0]
-                marker_pose.pose.position.y = tvec[0, 0]
+                marker_pose.pose.position.x = tvec[0, 0]
+                marker_pose.pose.position.y = tvec[2, 0]
                 marker_pose.pose.position.z = tvec[1, 0]
                 marker_pose.pose.orientation.x = quat[0]
                 marker_pose.pose.orientation.y = quat[1]
