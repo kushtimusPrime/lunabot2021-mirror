@@ -10,6 +10,7 @@
         <arg name="align_depth" value="true" />
         <arg name="enable_color" value="true" />
         <arg name="enable_depth" value="true" />
+        <arg name="enable_pointcloud" value="true" />
 
         <!-- Disable everything that is unused to avoid Hardware Overflow -->
         <arg name="enable_infra1" value="false" />
