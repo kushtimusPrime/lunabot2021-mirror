@@ -124,15 +124,15 @@ def callback(data):
                     # Extract rotation from quaternion
                     (roll_base_odom, pitch_base_odom, yaw_base_odom) = tf_conversions.transformations.euler_from_quaternion(rot_base_odom)
 
-                    pos = marker_pose.pose.position
+                    pos = marker_pose.pose
 
                     # theta_odom_map is the error between the particle filter estimated orientation vs the odometry estimated orientation
                     # Once again assumes 2D robot - robot does not fly or roll
-                    theta_odom_map = pos.z - yaw_base_odom
+                    theta_odom_map = pos.orientation.z - yaw_base_odom
 
                     #Next, we find the difference in the position estimate between the particle filter and the odometry
-                    x_odom_map = pos.x - trans_base_odom[0]*np.cos(theta_odom_map) + trans_base_odom[1]*np.sin(theta_odom_map)
-                    y_odom_map = pos.y - trans_base_odom[1]*np.cos(theta_odom_map) - trans_base_odom[0]*np.sin(theta_odom_map)
+                    x_odom_map = pos.position.x - trans_base_odom[0]*np.cos(theta_odom_map) + trans_base_odom[1]*np.sin(theta_odom_map)
+                    y_odom_map = pos.position.y - trans_base_odom[1]*np.cos(theta_odom_map) - trans_base_odom[0]*np.sin(theta_odom_map)
                     z_odom_map = 0 # Assuming the robot is not magically flying
 
 
