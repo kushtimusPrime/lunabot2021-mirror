@@ -10,10 +10,8 @@ class DutyCycle:
 
         # Initialize drive speed publishers
         self.publishers = {
-            "pub_tl_duty_cycle": rospy.Publisher('tl_duty_cycle', Float64, queue_size=0),
-            "pub_tr_duty_cycle": rospy.Publisher('tr_duty_cycle', Float64, queue_size=0),
-            "pub_bl_duty_cycle": rospy.Publisher('bl_duty_cycle', Float64, queue_size=0),
-            "pub_br_duty_cycle": rospy.Publisher('br_duty_cycle', Float64, queue_size=0),
+            "pub_left_control": rospy.Publisher('left_control', Float64, queue_size=0),
+            "pub_right_control": rospy.Publisher('right_control', Float64, queue_size=0),
         }
 
         self.left_speed = rospy.Subscriber("left_speed",Float64,self.left_callback)
@@ -27,8 +25,7 @@ class DutyCycle:
         bl_duty_cycle = data.data*100
 
         #publish duty cycles
-        self.publishers["pub_tl_duty_cycle"].publish(tl_duty_cycle)
-        self.publishers["pub_bl_duty_cycle"].publish(bl_duty_cycle)
+        self.publishers["pub_left_control"].publish(tl_duty_cycle)
 
     def right_callback(self,data):
 
@@ -37,8 +34,7 @@ class DutyCycle:
         br_duty_cycle = data.data*100
 
         #publish duty cycles
-        self.publishers["pub_tr_duty_cycle"].publish(tr_duty_cycle)
-        self.publishers["pub_br_duty_cycle"].publish(br_duty_cycle)
+        self.publishers["pub_right_control"].publish(tr_duty_cycle)
 
 
 
