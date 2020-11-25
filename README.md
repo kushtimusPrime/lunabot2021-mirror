@@ -63,7 +63,7 @@ netcat [COMP1 IP Address] [Same Port Number (ex. 1234)]
 You should be able to type a message on either the COMP1 terminal or the PI1 terminal, hit enter, and then see that message on the other terminal.
 
 Main Step: Setup ROS_MASTER_URI
-ROS_MASTER_URI is a ROS variable that tells all the ROS nodes where to look to find the master (roscore). By default, ROS_MASTER_URI is set to http://localhost:11311. However, in this particular scenario, the goal is to have a single roscore shared by two macines (COMP1 and PI1).
+ROS_MASTER_URI is a ROS variable that tells all the ROS nodes where to look to find the master (roscore). By default, ROS_MASTER_URI is set to http://localhost:11311. However, in this particular scenario, the goal is to have a single roscore shared by two machines (COMP1 and PI1).
 ROS_IP is another ROS variable that specifies the IP address of the local machine to ROS nodes. While its usually okay to leave default, it can sometimes cause errors if not specified.
 
 COMP1
