@@ -46,17 +46,17 @@ class Velocity:
         threshhold = 0.20
 
         if(a>0):
-	    a = 0.55*a+45
+	    a = 0.25*a+75
 	elif(a == 0):
 	    a = 0
 	else:
-	    a = 0.55*a-45
+	    a = 0.25*a-75
 	if(b>0):
-	    b = 0.55*b+45
+	    b = 0.25*b+75
 	elif(b == 0):
 	    b = 0
 	else:
-	    b = 0.55*b-45
+	    b = 0.25*b-75
         self.publishers["pub_left_control"].publish(a)
         self.publishers["pub_right_control"].publish(b)
         return a, b
