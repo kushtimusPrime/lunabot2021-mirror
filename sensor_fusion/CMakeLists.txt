@@ -11,6 +11,9 @@ find_package(catkin REQUIRED COMPONENTS
   realsense2_camera
   robot_localization
   rtabmap_ros
+  roscpp
+  rospy
+  std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -105,7 +108,11 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES sensor_fusion
+
 #  CATKIN_DEPENDS realsense2_camera robot_localization rtabmap_ros
+
+#  CATKIN_DEPENDS roscpp rospy std_msgs
+
 #  DEPENDS system_lib
 )
 

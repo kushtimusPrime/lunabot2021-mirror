@@ -1,4 +1,0 @@
-<launch>
-    <include file="$(find move_base_kinect)/launch/move_base.launch" />
-    <include file="$(find mapping)/launch/freenect_kinect_rtabmap.launch" />
-</launch>

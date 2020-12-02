@@ -1,0 +1,6 @@
+<launch>
+    <include file="$(find move_base_kinect)/launch/move_base.launch" />
+    <include file="$(find sensor_fusion)/launch/sensors.launch" />
+    <include file="$(find robot_slam)/launch/charuco.launch" />
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find move_base_kinect)/config/full_system_rviz.rviz"/>
+</launch>
