@@ -58,12 +58,17 @@ marker_detected_publisher = rospy.Publisher('charuco/marker_detected', Bool, que
 raw_distance_publisher = rospy.Publisher('charuco/raw_distance', Float64, queue_size=0)
 counter = 0
 
+first_translation = (None, None, None)
+first_yaw = None
+
 
 def callback(data):
     global decimator
     global p_rvec
     global p_tvec
     global counter
+    global first_translation
+    global first_yaw
 
     frame = bridge.imgmsg_to_cv2(data, desired_encoding='passthrough')
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -135,14 +140,17 @@ def callback(data):
                     y_odom_map = pos.position.y - trans_base_odom[1]*np.cos(theta_odom_map) - trans_base_odom[0]*np.sin(theta_odom_map)
                     z_odom_map = 0 # Assuming the robot is not magically flying
 
-
+                    if not first_yaw:
+                        first_translation = (x_odom_map, y_odom_map, z_odom_map)
+                        first_yaw = theta_odom_map
 
                     # Finally, we convert back to quaternion
                     print(theta_odom_map)
-                    q = tf_conversions.transformations.quaternion_from_euler(0, 0, theta_odom_map)
+                    q = tf_conversions.transformations.quaternion_from_euler(0, 0, theta_odom_map - first_yaw)
 
                     # Publish transform
-                    tf1Broadcaster.sendTransform((x_odom_map, y_odom_map, z_odom_map), q, rospy.Time.now(), "/odom", "/map")
+                    translation = (x_odom_map - first_translation[0], y_odom_map - first_translation[1], z_odom_map - first_translation[2])
+                    tf1Broadcaster.sendTransform(translation, q, rospy.Time.now(), "/odom", "/map")
 
                 except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                     rospy.logwarn("Unable to publish transformation from /map --> /odom because of an error with transform from /odom --> /base_link")
