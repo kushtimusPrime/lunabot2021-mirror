@@ -26,6 +26,8 @@ public:
     inline int getWidth() const { return window.getWidth(); }
     inline int getHeight() const { return window.getHeight(); }
     inline float getFOV() const { return camera.getFOV(); }
+    inline glm::vec3 getPos() const { return camera.getPos(); }
+    inline glm::vec3 getRot() const { return camera.getRot(); }
 private:
     Window window;
     Camera camera; // Must be below window for correct initialization order

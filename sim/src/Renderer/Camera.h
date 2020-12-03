@@ -42,6 +42,9 @@ public:
         return uniformBuffer.view;
     }
     inline float getFOV() const { return fov; }
+    // Y and Z are swapped
+    inline glm::vec3 getPos() const { return glm::vec3(pos.x, pos.z, pos.y); }
+    inline glm::vec3 getRot() const { return glm::vec3(0, glm::radians(yaw), glm::radians(pitch)); }
 private:
     struct UniformBuffer {
         glm::mat4 projection = glm::identity<glm::mat4>();

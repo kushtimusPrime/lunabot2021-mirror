@@ -6,9 +6,13 @@
 #include "Renderer/Renderer.h"
 
 #include <ros/ros.h>
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <geometry_msgs/Vector3.h>
 #include <std_msgs/Header.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/Image.h>
+#include <sensor_msgs/Imu.h>
 
 int main(int argc, char* argv[]) {
     spdlog::set_level(spdlog::level::debug);
@@ -20,10 +24,16 @@ int main(int argc, char* argv[]) {
     ros::Publisher cameraInfoPublisher = n.advertise<sensor_msgs::CameraInfo>("/camera/color/camera_info", 1000);
     ros::Publisher rgbPublisher = n.advertise<sensor_msgs::Image>("/camera/color/image_raw", 1000);
     ros::Publisher depthPublisher = n.advertise<sensor_msgs::Image>("/camera/aligned_depth_to_color/image_raw", 1000);
+    ros::Publisher imuPublisher = n.advertise<sensor_msgs::Imu>("/rtabmap/imu", 1000);
 
     Renderer renderer("Simulation", 500, 500);
     Shader shader("basic");
     renderer.loadObject("living_room");
+
+    double prevTime = glfwGetTime();
+    glm::dvec3 prevPos = renderer.getPos();
+    glm::dvec3 prevVel(0, 0, 0);
+    glm::dvec3 prevRot = renderer.getRot();
 
 
     while(renderer.isRunning() && ros::ok()) {
@@ -41,7 +51,7 @@ int main(int argc, char* argv[]) {
         std_msgs::Header header;
         header.seq = count;
         header.stamp = ros::Time::now();
-        header.frame_id = "camera_link";
+        header.frame_id = "base_link";
 
         sensor_msgs::CameraInfo cameraInfo;
         cameraInfo.header = header;
@@ -65,6 +75,31 @@ int main(int argc, char* argv[]) {
         };
         cameraInfoPublisher.publish(cameraInfo);
 
+        double curTime = glfwGetTime();
+        double deltaTime = curTime - prevTime;
+        glm::vec3 curPos = renderer.getPos();
+        glm::vec3 curRot = renderer.getRot();
+        geometry_msgs::Vector3 angularVel;
+        angularVel.x = (curRot[0] - prevRot[0]) / deltaTime;
+        angularVel.y = (curRot[1] - prevRot[1]) / deltaTime;
+        angularVel.z = (curRot[2] - prevRot[2]) / deltaTime;
+        glm::vec3 curVel = glm::vec3{
+            (curPos[0] - prevPos[0]) / deltaTime,
+            (curPos[1] - prevPos[1]) / deltaTime,
+            (curPos[2] - prevPos[2]) / deltaTime,
+        };
+        geometry_msgs::Vector3 linearAccel;
+        linearAccel.x = (curVel[0] - prevVel[0]) / deltaTime;
+        linearAccel.y = 9.80665 + (curVel[1] - prevVel[1]) / deltaTime;
+        linearAccel.z = (curVel[2] - prevVel[2]) / deltaTime;
+        tf2::Quaternion quat;
+        quat.setRPY(curRot[0], curRot[1], curRot[2]);
+        quat.normalize();
+        prevTime = curTime;
+        prevPos = curPos;
+        prevRot = curRot;
+        prevVel = curVel;
+
         sensor_msgs::Image rgbImage;
         rgbImage.header = header;
         rgbImage.width = renderer.getWidth();
@@ -87,6 +122,16 @@ int main(int argc, char* argv[]) {
             reinterpret_cast<std::uint8_t*>(depth.data() + depth.size())
         );
         depthPublisher.publish(depthImage);
+
+        sensor_msgs::Imu imuMessage;
+        imuMessage.header = header;
+        imuMessage.orientation = tf2::toMsg(quat);
+        imuMessage.angular_velocity = angularVel;
+        imuMessage.linear_acceleration = linearAccel;
+        imuMessage.orientation_covariance = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+        imuMessage.angular_velocity_covariance = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+        imuMessage.linear_acceleration_covariance = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+        imuPublisher.publish(imuMessage);
 
         count++;
 
