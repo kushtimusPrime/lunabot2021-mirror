@@ -8,9 +8,9 @@
         <arg name="rgb_topic" value="/camera/color/image_raw" />
         <arg name="depth_topic" value="/camera/aligned_depth_to_color/image_raw" />
         <arg name="imu_topic" value="/rtabmap/imu" />
-        <arg name="scan_cloud_topic" value="/camera/depth/color/points" />
-
-        <arg name="subscribe_scan_cloud" value="true" />
+        <!--<arg name="scan_cloud_topic" value="/camera/depth/color/points" />
+        
+        <arg name="subscribe_scan_cloud" value="true" />-->
         <arg name="wait_imu_to_init" value="true" />
         <arg name="approx_sync" value="false" />
 
