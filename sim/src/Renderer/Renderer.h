@@ -13,6 +13,7 @@
 class Renderer {
 public:
     Renderer(const std::string& name, int width, int height);
+    inline void doneLoading() { camera.setCursorPosCallback(); }
     inline bool isRunning() { return !window.shouldClose(); }
     std::pair<std::vector<std::uint8_t>, std::vector<float>> render(const Shader& shader); // Returns the RGB-D
     inline void update() {

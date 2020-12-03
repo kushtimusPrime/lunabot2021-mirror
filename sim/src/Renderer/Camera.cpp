@@ -6,9 +6,6 @@ Camera::Camera(Window& window) : window(window) {
         glViewport(0, 0, width, height);
         ((Camera*)glfwGetWindowUserPointer(window))->setProjection(width, height);
     });
-    glfwSetCursorPosCallback(window.ptr, [](GLFWwindow* window, double x, double y) {
-        ((Camera*)glfwGetWindowUserPointer(window))->setCursorPos(x, y);
-    });
     glfwSetMouseButtonCallback(window.ptr, [](GLFWwindow* window, int button, int action, int mods) {
         if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
             ((Camera*)glfwGetWindowUserPointer(window))->enable();
@@ -17,6 +14,11 @@ Camera::Camera(Window& window) : window(window) {
 
     prevX = (double)window.width / 2;
     prevY = (double)window.height / 2;
+    front = glm::normalize(glm::vec3(
+            cos(glm::radians(pitch)) * cos(glm::radians(yaw)),
+            sin(glm::radians(pitch)),
+            cos(glm::radians(pitch)) * sin(glm::radians(yaw))
+    ));
 
     glGenBuffers(1, &UBO);
 

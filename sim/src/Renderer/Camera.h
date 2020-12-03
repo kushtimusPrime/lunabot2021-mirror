@@ -17,6 +17,12 @@ public:
 
     void update();
     void setCursorPos(double x, double y);
+    inline void setCursorPosCallback() {
+        glfwGetCursorPos(window.ptr, &prevX, &prevY);
+        glfwSetCursorPosCallback(window.ptr, [](GLFWwindow* window, double x, double y) {
+            ((Camera*)glfwGetWindowUserPointer(window))->setCursorPos(x, y);
+        });
+    }
     inline void enable() {
         enabled = true;
         glfwSetInputMode(window.ptr, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
