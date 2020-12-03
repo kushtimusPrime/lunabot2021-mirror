@@ -29,6 +29,7 @@ int main(int argc, char* argv[]) {
     Renderer renderer("Simulation", 500, 500);
     Shader shader("basic");
     //renderer.loadObject("living_room");
+    renderer.loadObject("charuco_marker");
     renderer.doneLoading();
 
     double prevTime = glfwGetTime();
