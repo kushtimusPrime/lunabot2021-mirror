@@ -62,16 +62,16 @@ private:
     GLuint UBO = 0;
     UniformBuffer uniformBuffer;
 
-    glm::vec3 pos{ 0, 1, 0 };
+    glm::vec3 pos{ 2.439393, 0.354034, 7.124863 };
     glm::vec3 up{ 0, 1, 0 };
-    glm::vec3 front{ 0, 0, -1 };
+    glm::vec3 front{0, 0, 0};
 
     double prevTime = glfwGetTime();
     const float baseSpeed = 1;
     const double sensitivity = 0.1;
 
-    double yaw = -90;
-    double pitch = 0;
+    double yaw = -102.1;
+    double pitch = 0.7;
     double prevX, prevY;
     bool enabled = true;
 };
