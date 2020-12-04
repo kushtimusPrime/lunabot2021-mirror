@@ -17,6 +17,6 @@
         <arg name="frame_id" value="base_link" />
         <arg name="odom_frame_id" value="odom" />
         <arg name="publish_tf_map" value="true"/>
-        <arg name="publish_tf_odom" value="true" />
+        <arg name="publish_tf_odom" value="false" />
     </include>
 </launch>
