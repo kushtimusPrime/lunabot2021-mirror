@@ -66,8 +66,8 @@ def right_callback(data):
 
 #Initialize as ROS node
 rospy.init_node('motor_control_b')
-rospy.Subscriber("tl_duty_cycle",Float64,left_callback)
-rospy.Subscriber("tr_duty_cycle",Float64,right_callback)
+rospy.Subscriber("left_control",Float64,left_callback)
+rospy.Subscriber("right_control",Float64,right_callback)
 # Ready to go
 rospy.loginfo("Motor Control B initialized...")
 

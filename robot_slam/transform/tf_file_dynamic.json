@@ -1,0 +1,10 @@
+{
+	"transforms" : [
+		{
+			"frame_id" : "camera_link",
+			"child_id" : "charuco_board_origin",
+			"pose_topic" : "charuco/marker_pose",
+			"invert" : "False"
+		}
+	]
+}

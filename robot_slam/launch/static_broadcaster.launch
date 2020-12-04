@@ -1,0 +1,12 @@
+<launch>
+	<node pkg="tf2_ros" type="static_transform_publisher" name="map_camera_mount_base" args="0 0 0 0 0 0 1 map camera_mount_base" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="camera_mount_base_robot_frame_BL" args="0 0.235 0 0 0 0 1 camera_mount_base robot_frame_BL" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="robot_frame_BL_robot_center" args="0.4225 -0.225 0 0 0 0 1 robot_frame_BL robot_center" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="robot_frame_BL_robot_frame_BR" args="0 -0.45 0 0 0 0 1 robot_frame_BL robot_frame_BR" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="robot_frame_BL_robot_frame_FLJ" args="0.845 0 0 0 0 0 1 robot_frame_BL robot_frame_FLJ" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="robot_frame_BL_robot_frame_FL" args="1.07 0 0 0 0 0 1 robot_frame_BL robot_frame_FL" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="robot_frame_BR_robot_frame_FR" args="0.845 0 0 0 0 0 1 robot_frame_BR robot_frame_FR" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="robot_frame_FL_kinect_mount_base" args="0 0 0 0 0 0 1 robot_frame_FL kinect_mount_base" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="kinect_mount_base_kinect_base" args="0 0 0 0 0 0 1 kinect_mount_base kinect_base" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="kinect_base_camera_link" args="0 0 0 0 0 0 1 kinect_base camera_link" />
+</launch>
