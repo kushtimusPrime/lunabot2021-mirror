@@ -1,24 +1,14 @@
 #!/usr/bin/python
 import rospy
-import rospkg
-import cv2
 import numpy as np
-from sensor_msgs.msg import Image
 from geometry_msgs.msg import Pose, PoseStamped
-from std_msgs.msg import Bool, Float64
-from cv_bridge import CvBridge
 import tf2_ros
 import tf
 import tf_conversions
-import yaml
-
 
 MARKER_POSE_TOPIC = '/charuco/marker_pose'
 
 rospy.init_node('charuco_link')
-
-p_rvec = None
-p_tvec = None
 
 tfBuffer = tf2_ros.Buffer()
 tf1Broadcaster = tf.TransformBroadcaster()
