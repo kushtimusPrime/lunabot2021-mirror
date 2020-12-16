@@ -77,11 +77,12 @@ imu0: /rtabmap/imu
 # IMU Filter Madgwick fuses angular velocity and linear acceleration into orientation
 imu0_config: [
   false, false, false, # X, Y, Z
-  true, true, true,    # Roll, Pitch, Yaw
+  false, false, false,    # Roll, Pitch, Yaw
   false, false, false, # Linear Velocity
   true, true, true,    # Angular Velocity
   true, true, true,    # Linear Acceleration
 ]
+imu0_relative: true
 
 # RTAB-Map Odom
 odom0: /rtabmap/odom
