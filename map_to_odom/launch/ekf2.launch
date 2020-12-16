@@ -1,0 +1,8 @@
+<launch>
+    <node name="charuco_link" pkg="map_to_odom"></node>
+
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_node2" clear_params="true">
+        <rosparam command="load" file="$(dirname)/ekf2_params.yaml" />
+    </node>
+
+</launch>
