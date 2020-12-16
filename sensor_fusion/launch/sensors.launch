@@ -19,7 +19,7 @@
 
         <!-- Transform trees are needed for the ekf_localization_node -->
         <arg name="publish_tf" value="true" />
-        <arg name="publish_odom_tf" value="true" />
+        <arg name="publish_odom_tf" value="false" />
     </include>
     <rosparam> /camera/motion_module/global_time_enabled: false </rosparam>
 
@@ -32,7 +32,7 @@
     </node>
 
     <node pkg="tf" type="static_transform_publisher" name="camera_link_transform"
-        args="0 0 0 0 0 0 base_link camera_link 100" />
+        args="0 0 0 0 0 0 base_link camera_link 0.001" />
 
     <include file="$(find mapping)/launch/rtabmap.launch" />
 </launch>
