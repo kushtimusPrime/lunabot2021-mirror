@@ -1,6 +1,7 @@
 <launch>
     <include file="$(find realsense2_camera)/launch/rs_camera.launch">
         <!-- For RealSense IMU Info -->
+        <arg name="initial_reset" value="true" />
         <arg name="enable_gyro" value="true" />
         <arg name="enable_accel" value="true" />
         <arg name="enable_pointcloud" value="true" />
@@ -18,7 +19,7 @@
     </node>
 
     <node pkg="tf" type="static_transform_publisher" name="camera_link_transform"
-        args="0 0 0 0 0 0 base_link camera_link 100" />
+        args="0 0 0 0 0 0 base_link camera_link 0.001" />
 
     <include file="$(find rtabmap_ros)/launch/rtabmap.launch">
         <arg name="rtabmap_args" value="--delete_db_on_start --Optimizer/GravitySigma 0.3" />

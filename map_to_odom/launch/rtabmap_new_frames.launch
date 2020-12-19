@@ -1,24 +1,12 @@
 <launch>
     <include file="$(find realsense2_camera)/launch/rs_camera.launch">
         <!-- For RealSense IMU Info -->
+        <arg name="initial_reset" value="true" />
         <arg name="enable_gyro" value="true" />
         <arg name="enable_accel" value="true" />
+        <arg name="enable_pointcloud" value="true" />
         <arg name="unite_imu_method" value="linear_interpolation" />
-        <arg name="enable_sync" value="false" />
-
-        <!-- For RTAB-Map -->
         <arg name="align_depth" value="true" />
-        <arg name="enable_color" value="true" />
-        <arg name="enable_depth" value="true" />
-
-        <!-- Disable everything that is unused to avoid Hardware Overflow -->
-        <arg name="enable_infra1" value="false" />
-        <arg name="enable_infra2" value="false" />
-        <arg name="enable_fisheye" value="false" />
-
-        <!-- Transform trees are needed for the ekf_localization_node -->
-        <arg name="publish_tf" value="true" />
-        <arg name="publish_odom_tf" value="true" />
     </include>
     <rosparam> /camera/motion_module/global_time_enabled: false </rosparam>
 
@@ -31,13 +19,25 @@
     </node>
 
     <node pkg="tf" type="static_transform_publisher" name="camera_link_transform"
-        args="0 0 0 0 0 0 base_link camera_link 100" />
+        args="0 0 0 0 0 0 base_link_r camera_link 0.001" />
 
     <include file="$(find rtabmap_ros)/launch/rtabmap.launch">
+        <arg name="rtabmap_args" value="--delete_db_on_start --Optimizer/GravitySigma 0.3" />
+        
+        <arg name="camera_info_topic" value="/camera/color/camera_info" />
+        <arg name="rgb_topic" value="/camera/color/image_raw" />
+        <arg name="depth_topic" value="/camera/aligned_depth_to_color/image_raw" />
+        <arg name="imu_topic" value="/rtabmap/imu" />
+        
+        <arg name="wait_imu_to_init" value="true" />
+        <arg name="approx_sync" value="false" />
+
+        <arg name="odom_frame_id" value="odom_r" />
+        <arg name="map_frame_id" value="map_r"/>
+        <arg name="vo_frame_id" value="odom_r"/>
+        <arg name="publish_tf_odom" value="true" />
         <arg name="frame_id" value="base_link_r" />
         <arg name="publish_tf_map" value="true"/>
-        <arg name="publish_tf_odom" value="true" />
-        <arg name="odom_frame_id" default="odom_r"/>
-        <arg name="map_frame_id" default="map_r"/>
+
     </include>
 </launch>

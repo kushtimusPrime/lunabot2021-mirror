@@ -109,7 +109,7 @@ def callback(data):
                 marker_detected.data = True
                 marker_pose = PoseStamped()
                 quat = tf.transformations.quaternion_from_euler(rvec[1, 0], rvec[0, 0], -rvec[2, 0])
-                marker_pose.header.frame_id = "charuco_link"
+                marker_pose.header.frame_id = "camera_link"
                 marker_pose.header.stamp = rospy.Time.now()
                 marker_pose.header.seq = counter
                 marker_pose.pose.position.x = tvec[0, 0] / 100
