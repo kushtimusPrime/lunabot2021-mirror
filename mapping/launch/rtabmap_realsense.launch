@@ -1,5 +1,6 @@
 <launch>
     <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+        <arg name="initial_reset" value="true" />
         <!-- For RealSense IMU Info -->
         <arg name="initial_reset" value="true" />
         <arg name="enable_gyro" value="true" />
@@ -10,7 +11,7 @@
     </include>
     <rosparam> /camera/motion_module/global_time_enabled: false </rosparam>
 
-    <node pkg="imu_filter_madgwick" type="imu_filter_node" name="madgiwck_filter">
+    <node pkg="imu_complementary_filter" type="complementary_filter_node" name="complementary_filter_gain_node" output="screen">
         <param name="use_mag" value="false" />
         <param name="publish_tf" value="false" />
         <param name="world_frame" value="enu" />
@@ -32,7 +33,6 @@
         <arg name="wait_imu_to_init" value="true" />
         <arg name="approx_sync" value="false" />
 
-        <arg name="odom_frame_id" value="odom" />
         <arg name="publish_tf_odom" value="true" />
         <arg name="frame_id" value="base_link" />
         <arg name="publish_tf_map" value="true"/>

@@ -1,5 +1,6 @@
 <launch>
     <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+        <arg name="initial_reset" value="true" />
         <!-- For RealSense IMU Info -->
         <arg name="enable_gyro" value="true" />
         <arg name="enable_accel" value="true" />
@@ -10,6 +11,7 @@
         <arg name="align_depth" value="true" />
         <arg name="enable_color" value="true" />
         <arg name="enable_depth" value="true" />
+        <arg name="enable_pointcloud" value="true" />
 
         <!-- Disable everything that is unused to avoid Hardware Overflow -->
         <arg name="enable_infra1" value="false" />
@@ -18,11 +20,11 @@
 
         <!-- Transform trees are needed for the ekf_localization_node -->
         <arg name="publish_tf" value="true" />
-        <arg name="publish_odom_tf" value="true" />
+        <arg name="publish_odom_tf" value="false" />
     </include>
     <rosparam> /camera/motion_module/global_time_enabled: false </rosparam>
 
-    <node pkg="imu_filter_madgwick" type="imu_filter_node" name="madgiwck_filter">
+    <node pkg="imu_complementary_filter" type="complementary_filter_node" name="complementary_filter_gain_node" output="screen">
         <param name="use_mag" value="false" />
         <param name="publish_tf" value="false" />
         <param name="world_frame" value="enu" />
@@ -31,7 +33,7 @@
     </node>
 
     <node pkg="tf" type="static_transform_publisher" name="camera_link_transform"
-        args="0 0 0 0 0 0 base_link camera_link 100" />
+        args="0 0 0 0 0 0 base_link camera_link 0.001" />
 
     <include file="$(find mapping)/launch/rtabmap.launch" />
 </launch>
