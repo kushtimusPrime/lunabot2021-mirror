@@ -22,7 +22,7 @@ def main():
             
             (trans,rot) = listener.lookupTransform('base_link_r', 'map_r', rospy.Time(0))
 
-            robot_pose.header.frame_id = "base_link"
+            robot_pose.header.frame_id = "base_link_r"
             robot_pose.header.stamp = rospy.Time.now()
             robot_pose.header.seq = counter
 
