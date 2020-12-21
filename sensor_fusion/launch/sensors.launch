@@ -24,7 +24,7 @@
     </include>
     <rosparam> /camera/motion_module/global_time_enabled: false </rosparam>
 
-    <node pkg="imu_complementary_filter" type="complementary_filter_node" name="complementary_filter_gain_node" output="screen">
+    <node pkg="imu_filter_madgwick" type="imu_filter_node" name="madgwick_filter" output="screen">
         <param name="use_mag" value="false" />
         <param name="publish_tf" value="false" />
         <param name="world_frame" value="enu" />
