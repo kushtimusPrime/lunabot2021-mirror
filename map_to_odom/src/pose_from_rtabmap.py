@@ -2,12 +2,14 @@
 import rospy
 import rospkg
 import numpy as np
-from geometry_msgs.msg import Pose, PoseStamped
+from geometry_msgs.msg import PoseWithCovarianceStamped, PoseWithCovariance
 from std_msgs.msg import Bool, Float64
 import tf
 
+covariance = [0.01,0,0,0,0,0, 0,0.01,0,0,0,0, 0,0,0.01,0,0,0, 0,0,0,0.01,0,0, 0,0,0,0,0.01,0, 0,0,0,0,0,0.01]
+
 #not sure if this is the place we want to publish to
-robot_pose_publisher = rospy.Publisher('rtabmap/rover_pose', PoseStamped, queue_size=0)
+robot_pose_publisher = rospy.Publisher('rtabmap/rover_pose', PoseWithCovarianceStamped, queue_size=0)
 
 def main():
     rospy.init_node("pose_from_rtabmap")
@@ -18,13 +20,14 @@ def main():
 
     while not rospy.is_shutdown():
         try:
-            robot_pose = PoseStamped()
+            robot_pose = PoseWithCovarianceStamped()
             
-            (trans,rot) = listener.lookupTransform('base_link_r', 'map_r', rospy.Time(0))
+            (trans,rot) = listener.lookupTransform('base_link_r', 'map', rospy.Time(0))
 
-            robot_pose.header.frame_id = "base_link_r"
+            robot_pose.header.frame_id = "base_link"
             robot_pose.header.stamp = rospy.Time.now()
             robot_pose.header.seq = counter
+            robot_pose.pose.covariance = covariance
 
             robot_pose.pose.position.x = trans[0]
             robot_pose.pose.position.y = trans[1]
